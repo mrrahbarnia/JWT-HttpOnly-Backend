@@ -2,7 +2,9 @@ import logging
 
 from typing import Any
 from django.core.validators import MinLengthValidator
+from django.core.exceptions import ValidationError
 from rest_framework.views import APIView
+from rest_framework.exceptions import APIException
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -38,9 +40,17 @@ class RegisterApi(APIView):
         input_serializer = self.RegisterInputSerializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
 
-        services.register_user(
-            email=input_serializer.validated_data.get('email', None),
-            password=input_serializer.validated_data.get('password', None)
-        )
-
-        return Response(status=status.HTTP_201_CREATED)
+        try:
+            services.register_user(
+                email=input_serializer.validated_data.get('email', None),
+                password=input_serializer.validated_data.get('password', None)
+            )
+            return Response(status=status.HTTP_201_CREATED)
+        except ValidationError:
+            return Response(
+                {'message': 'There is an active user with the provided info'},
+                status=status.HTTP_409_CONFLICT
+            )
+        except Exception as ex:
+            logger.warning({'unexpected_error': ex})
+            raise APIException(ex)
