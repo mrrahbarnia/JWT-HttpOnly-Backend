@@ -9,6 +9,8 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.request import Request
 from drf_spectacular.utils import extend_schema
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from core import services
 
@@ -54,3 +56,19 @@ class RegisterApi(APIView):
         except Exception as ex:
             logger.warning({'unexpected_error': ex})
             raise APIException(ex)
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        security_stamp = user.security_stamp
+        token['security_stamp'] = security_stamp
+        services.set_security_stamp(security_stamp)
+
+        return token
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middleware.SecurityStampChecker'
 ]
 
 if DEBUG:
@@ -162,6 +163,7 @@ REST_FRAMEWORK = {
 # Redis config
 REDIS_HOST = 'redis'
 REDIS_PORT = 6379
+SECURITY_STAMP_LIFE_TIME = 86400
 
 # Logging config
 LOGGING = {

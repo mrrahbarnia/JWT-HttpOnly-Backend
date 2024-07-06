@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import (
@@ -6,6 +8,9 @@ from django.contrib.auth.base_user import (
 )
 
 from common.models import BaseModel
+
+def default_security_stamp() -> str:
+    return (str(uuid.uuid4())).split('-')[0]
 
 
 class BaseUserManager(BUM):
@@ -49,6 +54,7 @@ class BaseUserManager(BUM):
 class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(verbose_name='email address', unique=True)
+    security_stamp = models.CharField(default=default_security_stamp, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
