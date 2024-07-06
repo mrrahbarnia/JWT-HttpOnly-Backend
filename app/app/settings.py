@@ -1,6 +1,10 @@
 import os
 
+from datetime import timedelta
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +28,7 @@ LOCAL_APPS = [
     'common.apps.CommonConfig',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
+    'transactions.apps.TransactionsConfig'
 ]
 
 THIRD_PARTY_APP = [
@@ -196,3 +201,8 @@ LOGGING = {
 # CORS config
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
+
+# JWT config
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=int(os.getenv('TOKEN_LIFE_TIME'))),
+}
