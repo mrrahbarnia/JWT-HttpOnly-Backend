@@ -158,6 +158,7 @@ REST_FRAMEWORK = {
     ),
 
     'COERCE_DECIMAL_TO_STRING': False,
+    "NON_FIELD_ERRORS_KEY": 'detail',
 }
 
 # Redis config
